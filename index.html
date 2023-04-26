@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+        crossorigin=""></script>
+
+    </head>
+    <body>
+        <div id="map" style="height: 100%;"></div>
+        <script>
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+            };
+
+            navigator.geolocation.getCurrentPosition(success, error, options);
+       
+            function success(pos) {
+                const crd = pos.coords;
+                var map = L.map('map').setView([crd.latitude, crd.longitude], 13);
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    }).addTo(map);
+                var marker = L.marker([crd.latitude, crd.longitude]).addTo(map)
+                    .bindPopup(`<p>\n Latitude: ${crd.latitude} <p> Longitude: ${crd.longitude} <p>Accuracy: ${crd.accuracy}`)
+                    .openPopup();;
+                var circle = L.circle([crd.latitude, crd.longitude], {
+                    color: 'blue',
+                    fillColor: '#f03',
+                    fillOpacity: 0.2,
+                    radius: crd.accuracy
+                }).addTo(map);
+            }
+            
+            function error(err) {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+            }
+
+        </script>
+    </body>
+</html>
